@@ -1,36 +1,54 @@
+import time
 import webbrowser
-
 import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyOAuth
+import os
 
 if __name__ == '__main__':
+    scope = "user-library-read user-read-playback-state"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 
-    auth_manager = SpotifyClientCredentials()
-    sp = spotipy.Spotify(auth_manager=auth_manager)
+    webbrowser.open("https://open.spotify.com/playlist/4LuLZqAtpf4To5rPCz8p5a?si=8a53d3cf69704282&nd=1")
 
-    print("""
-███████ ███████ ██      ███████ 
-██      ██      ██      ██      
-█████   █████   ██      ███████ 
-██      ██      ██           ██ 
-███████ ███████ ███████ ███████ 
-                                                   
-""")
+    while True:
 
-    print("******************************************************")
-    print("Welcome to Eels-Bot!")
-    print("******************************************************")
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("""
+            ███████ ███████ ██      ███████
+            ██      ██      ██      ██
+            █████   █████   ██      ███████
+            ██      ██      ██           ██
+            ███████ ███████ ███████ ███████
 
-    print("What do you want to listen to from this lovely band?")
-    print("1 - Spotify's Eels Essentials")
-    print("2 - Daneshvar's Picks")
-    print("Just enter your number:", end = " ")
+            """)
 
-    q = int(input())
+        current_song = sp.currently_playing()
 
-    if q == 1:
-        webbrowser.open("https://open.spotify.com/playlist/37i9dQZF1DZ06evO24NfX2?si=0b690e33647f444e&nd=1")
-    if q == 2:
-        webbrowser.open("https://open.spotify.com/playlist/4LuLZqAtpf4To5rPCz8p5a?si=530714c88dd34eca&nd=1")
+        song_name = current_song['item']['name']
+        artist_name = current_song['item']['album']['artists'][0]['name']
+        print(f"Playing {song_name} from {artist_name}...")
 
-    print("Cool new features coming soon!")
+        progress = current_song['progress_ms']
+        duration = current_song['item']['duration_ms']
+
+        blocks = (int)((progress/duration) * 100)
+
+        print("+", end = "")
+        for i in range(98):
+            print("-", end = "")
+        print("+")
+
+        print("|", end = "")
+        for i in range(blocks - 1):
+            print("*", end = "")
+        for i in range(99 - blocks):
+            print(" ", end = "")
+        print("|")
+
+        print("+", end="")
+        for i in range(98):
+            print("-", end = "")
+        print("+")
+
+        time.sleep(3)
+
